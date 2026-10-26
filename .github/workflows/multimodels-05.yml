@@ -1,0 +1,82 @@
+name: SIDERAL MULTIMODELS 0.5
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_date:
+        description: "Data UTC YYYYMMDD; vazio = seleção automática"
+        required: false
+        type: string
+      run_cycle:
+        description: "Ciclo UTC 00, 06, 12 ou 18; vazio = seleção automática"
+        required: false
+        type: string
+      forecast_hours:
+        description: "Horas separadas por vírgula; padrão 0,6,...,168"
+        required: false
+        default: "0,6,12,18,24,30,36,42,48,54,60,66,72,78,84,90,96,102,108,114,120,126,132,138,144,150,156,162,168"
+        type: string
+  schedule:
+    # A seleção automática usa 12 h de margem e mira ciclos 00Z/12Z, cujo horizonte comum é maior.
+    - cron: "15 1,13 * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sideral-multimodels-05
+  cancel-in-progress: false
+
+jobs:
+  multimodels:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 350
+    env:
+      GFS_REQUEST_DELAY_SECONDS: "10"
+      LOG_LEVEL: INFO
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Preparar bibliotecas do GRIB
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libeccodes0 libeccodes-tools
+
+      - name: Instalar Python e dependências
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Instalar pacote
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[test]"
+
+      - name: Testes unitários
+        run: python -m pytest -q
+
+      - name: Executar download, regrade e consenso
+        env:
+          RUN_DATE: ${{ inputs.run_date }}
+          RUN_CYCLE: ${{ inputs.run_cycle }}
+          FORECAST_HOURS: ${{ inputs.forecast_hours }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m sideral_multimodels run \
+            --config config.yml \
+            --date "${RUN_DATE:-}" \
+            --cycle "${RUN_CYCLE:-}" \
+            --hours "${FORECAST_HOURS:-}" \
+            --raw-dir data/raw \
+            --output-dir output
+
+      - name: Publicar artefato do produto
+        uses: actions/upload-artifact@v4
+        with:
+          name: sideral-multimodels-05-${{ github.run_id }}
+          path: output/
+          if-no-files-found: error
+          retention-days: 14
