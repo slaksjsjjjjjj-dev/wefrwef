@@ -1,0 +1,12 @@
+numpy>=1.26,<3
+scipy>=1.11,<2
+xarray>=2024.1
+netCDF4>=1.6
+cfgrib>=0.9.14
+eccodes>=1.6
+requests>=2.31
+PyYAML>=6.0
+python-dotenv>=1.0
+ecmwf-opendata>=0.3.20
+matplotlib>=3.8
+pytest>=8.0

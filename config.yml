@@ -1,0 +1,71 @@
+project:
+  name: SIDERAL MULTIMODELS 0.5
+  version: "0.1.0"
+  description: "Consenso determinístico de três modelos numa grade global de 0,5°"
+
+grid:
+  resolution_degrees: 0.5
+  longitude_min: -180.0
+  longitude_max: 179.5
+  latitude_min: -90.0
+  latitude_max: 90.0
+  interpolation_regular: linear
+  interpolation_unstructured: nearest
+
+forecast:
+  interval_hours: 6
+  max_hour: 168
+  minimum_models_per_cell: 2
+  # Sem data/ciclo explícitos, tenta uma rodada com 12 h de margem de disponibilidade.
+  automatic_cycle_delay_hours: 12
+  models:
+    - ecmwf
+    - gfs
+    - icon
+
+variables:
+  t2m:
+    label: Temperatura a 2 m
+    units: degC
+    agreement_scale: 4.0
+  d2m:
+    label: Ponto de orvalho a 2 m
+    units: degC
+    agreement_scale: 5.0
+  u10:
+    label: Componente zonal do vento a 10 m
+    units: m s-1
+    agreement_scale: 5.0
+  v10:
+    label: Componente meridional do vento a 10 m
+    units: m s-1
+    agreement_scale: 5.0
+  msl:
+    label: Pressão ao nível médio do mar
+    units: hPa
+    agreement_scale: 8.0
+  tp6h:
+    label: Precipitação no intervalo de 6 horas
+    units: mm
+    agreement_scale: 8.0
+
+models:
+  ecmwf:
+    enabled: true
+    name: ECMWF IFS Open Data
+    source: https://data.ecmwf.int/forecasts/
+    license: CC-BY-4.0; respeitar os termos do ECMWF e atribuir a fonte
+    precipitation_default: cumulative
+  gfs:
+    enabled: true
+    name: NOAA GFS 0.25 degree
+    source: https://nomads.ncep.noaa.gov/
+    license: NOAA/NCEP; verificar avisos e instruções do serviço NOMADS
+    precipitation_default: cumulative
+    request_delay_seconds: 10
+  icon:
+    enabled: true
+    name: DWD ICON Global
+    source: https://opendata.dwd.de/weather/nwp/icon/grib/
+    license: respeitar termos e atribuição DWD
+    precipitation_default: cumulative

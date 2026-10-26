@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+.pytest_cache/
+*.py[cod]
+.env
+.env.*
+!.env.example
+data/raw/
+output/
+*.idx
+*.grib
+*.grib2
+*.grib2.bz2
