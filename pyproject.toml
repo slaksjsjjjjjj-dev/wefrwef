@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=68", "wheel"]
+requires = ["setuptools>=77", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "Protótipo independente de consenso multimodelo global em grade de 0,5 grau para Sideral Meteorologia."
 readme = "README.md"
 requires-python = ">=3.11"
-license = {text = "MIT"}
+license = "MIT"
 authors = [{name = "Sideral Meteorologia Sistemas"}]
 dependencies = [
   "numpy>=1.26,<3",
@@ -30,8 +30,13 @@ test = ["pytest>=8.0"]
 [project.scripts]
 sideral-multimodels = "sideral_multimodels.cli:main"
 
+[tool.setuptools]
+include-package-data = true
+
 [tool.setuptools.packages.find]
-where = ["src"]
+where = ["."]
+include = ["sideral_multimodels*"]
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["."]
+python_files = ["test_*.py"]
