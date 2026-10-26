@@ -1,0 +1,11 @@
+[
+  "tests/test_core.py::test_combine_arrays_tracks_count_spread_and_agreement",
+  "tests/test_core.py::test_multimodels_uses_only_ecmwf_gfs_and_icon",
+  "tests/test_core.py::test_parse_hours_default_includes_zero_and_max",
+  "tests/test_core.py::test_parse_hours_rejects_missing_zero_and_duplicates",
+  "tests/test_core.py::test_resolve_run_checks_explicit_cycle",
+  "tests/test_core.py::test_target_grid_is_global_half_degree",
+  "tests/test_processing_helpers.py::test_common_model_surface_field_aliases",
+  "tests/test_processing_helpers.py::test_precip_step_range_parsing",
+  "tests/test_processing_helpers.py::test_temperature_and_pressure_units"
+]
